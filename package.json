@@ -1,0 +1,22 @@
+{
+  "name": "regex-validator",
+  "version": "1.0.0",
+  "description": "a commandline tool for validating regular expressions",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SiouxsieAsylum/Regex-Validation-Tool.git"
+  },
+  "author": "Dre-Dot-Js",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SiouxsieAsylum/Regex-Validation-Tool/issues"
+  },
+  "homepage": "https://github.com/SiouxsieAsylum/Regex-Validation-Tool#readme",
+  "dependencies": {
+    "readline": "^1.3.0"
+  }
+}

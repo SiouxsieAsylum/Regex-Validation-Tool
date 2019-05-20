@@ -1,5 +1,8 @@
-(function(){///////////////////////////////// START AND END OF STRING /////////////////////////////
+//this export is in its alpha stage. The intent is to validate for a custom number input that requires a certian string format
 
+
+exports.NumberValidator = function(regex){
+///////////////////////////////// START AND END OF STRING /////////////////////////////
   // Regex should start with ^ end with $ to ensure the entirety of input is valid
      console.log(regex + " starts with ^ - " + regex.startsWith("^"))
      console.log(regex + " ends with $ - " + regex.endsWith("$"))
@@ -13,27 +16,33 @@
       "\\{": "\\}"
     };
 
-    var bracketsMatch = true;
+    var limitReg;
 
     var startBrackets = Object.keys(acceptableBrackets);
     var bracketCounter = {}
 
     for (var starter of startBrackets) {
-      var startReg = new RegExp(starter, "g");
-    // Save for later in the process when we need to validate limits
-      if (starter === '\\{') limitReg = startReg;
-      var starterSet = regex.match(startReg);
-      bracketCounter[starter] = starterSet && starterSet.length || 0;
+      if (regex.match(starter) || regex.match(acceptableBrackets[starter])) {
+        //regex should not accept escaped brackets
 
-      var partner = acceptableBrackets[starter];
-      var endReg = new RegExp(partner, "g");
-      var enderSet = regex.match(endReg)
-      bracketCounter[partner] = enderSet && enderSet.length || 0;
+        var bracketsMatch = true;
+        var startReg = new RegExp(starter, "g");
+      // Save for later in the process when we need to validate limits
+        if (starter === '\\{') limitReg = startReg;
+        var starterSet = regex.match(startReg);
+        bracketCounter[starter] = starterSet && starterSet.length || 0;
 
-      if (bracketCounter[partner] !== bracketCounter[starter]) bracketsMatch = false;
+        var partner = acceptableBrackets[starter];
+        var endReg = new RegExp(partner, "g");
+        var enderSet = regex.match(endReg)
+        bracketCounter[partner] = enderSet && enderSet.length || 0;
+
+        if (bracketCounter[partner] !== bracketCounter[starter]) bracketsMatch = false;
+        console.log(regex + " has matching brackets - " + bracketsMatch)
+
+      }
     }
 
-    console.log(regex + " has matching brackets - " + bracketsMatch)
   /////////////////////////////////////// DIGITS ////////////////////////////
 
   // regexes should have a digit in them
@@ -42,7 +51,7 @@
    // . is regex for any character, so it much be escaped into an actual decimal point 
     var periodWasEscaped = false;
     var periodIndex = regex.indexOf(".");
-    if (!periodIndex) { 
+    if (periodIndex === -1) { 
       periodWasEscaped = 'not applicable'; 
     } else {
       var escapedPeriod = regex.slice(periodIndex - 1, periodIndex + 1);
@@ -71,21 +80,24 @@
 
   ///////////////////////////// LIMITS ON NUM OF DIGITS ///////////////////////////
   var limitMatch;
-  while ((limitMatch = limitReg.exec(regex)) !== null) {
-    // should only limit digits
-    var precededByDigit = false; 
-    var limitIndex = limitMatch.index; 
-    var precedingLimit = regex.substring(limitIndex - 2, limitIndex);
-    if (precedingLimit === '\\d') precededByDigit = true;
-    console.log(regex + " should only limit digits - " + precededByDigit)
+  if (limitReg){
+    while ((limitMatch = limitReg.exec(regex)) !== null) {
+      // should only limit digits
+      var precededByDigit = false; 
+      var limitIndex = limitMatch.index;
+      var precedingLimit = regex.substring(limitIndex - 2 , limitIndex);
+      if (precedingLimit === '\\d') precededByDigit = true;
+      console.log(regex + " should only limit digits - " + precededByDigit)
 
-    //if a limit doesn't start with zero it won't allow you to type
-    var followedByZero = false;
-    var startOfLimit = regex.substring(limitIndex + 1, limitIndex + 2);
-    if (parseInt(startOfLimit) === 0) followedByZero = true;
-    console.log(regex + " limit should start with zero - " + followedByZero)
+      //if a limit doesn't start with zero it won't allow you to type
+      var followedByZero = false;
+      var startOfLimit = regex.substring(limitIndex + 1, limitIndex + 2);
+      if (parseInt(startOfLimit) === 0) followedByZero = true;
+      console.log(regex + " limit should start with zero - " + followedByZero)
 
-  };
+    };
+  }
+
 
 
   ///////////////////////////// OPTIONAL CRITERIA  /////////////////////////////////////
@@ -100,6 +112,4 @@
       if (markAndPrevChar[0] === ")" || markAndPrevChar[0] === "-" ) isValidUse = true;
       console.log(regex + " uses ? to make capture groups or negatives optional - " + isValidUse)
     }
-  })(input)
-
-
+  }

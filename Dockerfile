@@ -1,4 +1,4 @@
-ROM mhart/alpine-node:12
+FROM mhart/alpine-node:12
 MAINTAINER AndreaMcKenzie mckenzie 
-COPY contents here
-CMD node hello_world.js
+COPY . . 
+CMD node app.js
