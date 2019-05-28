@@ -1,6 +1,4 @@
 //this export is in its alpha stage. The intent is to validate for a custom number input that requires a certian string format
-
-
 exports.NumberValidator = function(regex){
 ///////////////////////////////// START AND END OF STRING /////////////////////////////
   // Regex should start with ^ end with $ to ensure the entirety of input is valid
@@ -112,4 +110,6 @@ exports.NumberValidator = function(regex){
       if (markAndPrevChar[0] === ")" || markAndPrevChar[0] === "-" ) isValidUse = true;
       console.log(regex + " uses ? to make capture groups or negatives optional - " + isValidUse)
     }
+
+    return;
   }
